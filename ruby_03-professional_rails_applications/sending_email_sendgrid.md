@@ -4,6 +4,10 @@ length: 90
 tags: rails, email, sendgrid, smtp, action mailer
 ---
 
+## Setup Prior to Class
+
+* Make sure you have an active account with Sendgrid. You can set it up through [their website](https://sendgrid.com/marketing/sendgrid-services) but some students have run into issues with that. An easy workaround is to set it up through [Heroku](https://devcenter.heroku.com/articles/sendgrid).
+
 ## You've Changed
 
 Sometimes in life, people change. Like a frog boiled slowly in a pot of
@@ -35,6 +39,6 @@ Topics Covered:
 
 ### Materials
 
-* [ Repo/Tutorial ](https://github.com/tessgriffin/youve_changed)
+* [ Repo/Tutorial ](https://github.com/turingschool-examples/youve_changed)
 * [ Slides ](https://www.dropbox.com/s/ev7tya328sv9jyh/Turing%20-%20Sending%20Email.key?dl=0)
 * [ Notes ](https://www.dropbox.com/s/p496zd4xthyrnt6/Turing%20-%20Sending%20Email%20%28Notes%29.pages?dl=0)

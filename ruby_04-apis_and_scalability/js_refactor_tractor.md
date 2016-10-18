@@ -14,10 +14,11 @@ tags: javascript, refactoring, jquery
 ## Structure
 * 25 - Warm Up and Discussion
 * 5 - Break
-* 15 - Low Hanging Fruit for Refactoring JavaScript Code
-* 10 - More Complex Issues to Look Out For
+* 15 - Pair work
+* 10 - Share with the group
 * 5 - Break
-* 25 - Your Turn
+* 25 - Pair work
+* 10 - Share with the group
 
 ## Warmup and Discussion
 __What Is Refactoring and Why Do It?__
@@ -69,8 +70,10 @@ __Discussion Points__
   In a less eloquent quote that the one provided by Martin Fowler, 'you can't polish a turd if you don't first have the turd'.
 
 __Discussion Points__
+* Why bother refactoring if it's already green?
 * Exercism.io and Nitpicking
 * What's an example of working in a `red > green > refactor` style without testing, per se.
+
 
 ## Low Hanging Refactoring Fruit
 
@@ -212,7 +215,7 @@ __Discussion Points__
 #### Uncached jQuery Selectors
 
 ```js
-  $(“#myHeader”).hide();
+  $("#myHeader").hide();
   // do some things
   $("#myHeader").show();
 ```
@@ -317,25 +320,25 @@ __Discussion Points__
 * How often do you think developers make these kinds of 'mistakes' in production code?
 * How, other than memorizing flash cards, can you prevent potential bugs that you don't know are possible?
 
-## Additional Code Smells
+## Student Added Content
 
 #### Breaking the Law of Demeter
 
-No, not [this Demeter](https://en.wikipedia.org/wiki/Demeter). (Though she is the center of one of the more interesting season myths). 
+No, not [this Demeter](https://en.wikipedia.org/wiki/Demeter). (Though she is the center of one of the more interesting season myths).
 
-The Law of Demeter (LoD) is also known as the **principle of least knowledge**, which is a fancy way of saying each piece of code should be stupid. Here are some critical points: 
+The Law of Demeter (LoD) is also known as the **principle of least knowledge**, which is a fancy way of saying each piece of code should be stupid. Here are some critical points:
 
-* Units of code should have limited knowledge of other code. 
+* Units of code should have limited knowledge of other code.
 * Stranger Danger: Code should only talk to code it knows.
 
-LoD is a critical philosophy of object-oriented programming (OOP) and requires objects to request something from another object or instance rather than accessing it directly. 
+LoD is a critical philosophy of object-oriented programming (OOP) and requires objects to request something from another object or instance rather than accessing it directly.
 
-Object methods can invoke the methods of 5 types of objects: 
+Object methods can invoke the methods of 5 types of objects:
 
-1. The object itself. 
-2. The method's paramethers. 
-3. Objects instantiated within the method. 
-4. The Object's direct components. 
+1. The object itself.
+2. The method's paramethers.
+3. Objects instantiated within the method.
+4. The Object's direct components.
 5. Global variables within scope.
 
 **Example of LoD Code Smell**
@@ -400,7 +403,7 @@ A class or module should only have one reason to change.
 
 Anything that gives a class a reason to change should be considered a responsibility.
 
-````
+````md
 * Persistence
 * Validation
 * Notification
@@ -458,10 +461,6 @@ Revenue.prototype.calc_revenue(transaction) {
 ````
 
 Now the calculation of revenue is independent of the larger income statement and can adapt to transaction specific costs.
-
-#### Passing Many Arguments to a Function
-
-#### Dead Code Among the Living
 
 #### If If If Else If Else Else If Else ...
 
@@ -597,42 +596,155 @@ And that's it.
 
 So, break your if/elses into functions/objects if you can, look for patterns and making the problem easier, and see if recursion can help as well.
 
+#### Passing Too Many Arguments to a Function
+
+We have all been there, your on the one yard line... that function is almost complete... and then it hits you. You have to pass in ten variables to this ONE FUNCTION. You hit the ground on your knees, throw your hands in the air, and napalm blows up behind you like the classic cover to the hit 1986 drama Platoon. Not anymore. We are here, it's all ok. We will be taking you on a journey through time and space and also demonsrating solutions to this age old issue.
+
+We will be going into the most common solution to this problem: putting the variables into an object.
+
+#####1. Quick and dirty hash
+
+```js
+      case "inGame":
+          inGame(context, gameSize, game, fireSpeed, fireRate, counter);
+          counter++;
+          requestAnimationFrame(tick);
+
+          function inGame(context, gameSize, game, fireSpeed, fireRate, counter){
+		 game.level.update(game, fireSpeed, fireRate);
+		 context.clearRect(0, 0, gameSize.x, gameSize.y);
+  		 drawObject(context, game, counter);
+		 update(game);
+		}
+```
+
+becomes
+
+```js
+  case "inGame":
+     inGame({context: context, gameSize: gameSize, game: game,
+        fireSpeed: fireSpeed, fireRate: fireRate, counter: counter});
+        counter++;
+        requestAnimationFrame(tick);
+
+        function inGame(data){
+	  game.level.update(data.game, data.fireSpeed, data.fireRate);
+	  context.clearRect(0, 0, data.gameSize.x, data.gameSize.y);
+          drawObject(data.context, data.game, data.counter);
+          update(data.game);
+	}
+```
+ This can get messy if your variables are too varied.
+
+#####2. Break objects into more logical components
+
+```js
+   let Game = {game: game, gameSize: gameSize}
+   let Fire = {fireSpeed: fireSpeed, fireRate: fireRate}
+
+      	case "inGame":
+          inGame(context, Game, Fire, counter);
+          counter++;
+          requestAnimationFrame(tick);
+
+          function inGame(context, Game, Fire, counter){
+		 game.level.update(Game.game, Fire.fireSpeed, Fire.fireRate);
+		 context.clearRect(0, 0, Game.gameSize.x, Game.gameSize.y);
+  		 drawObject(context, Game.game, counter);
+		 update(game);
+		}
+```
+
+While this approach created more arguments, they're more logically broken out.
+
+#####3. Rethink the structure of your code.
+If breaking your arguments into logical objects does not make sense, or there are simply too many arguments
+you may want to break up the responsiblity of your functions.
+
+```js
+      case "inGame":
+          inGame(context, gameSize, game, fireSpeed, fireRate, counter);
+          inGameUpdateLevel(game, fireSpeed, fireRate);
+          inGameClearCxt(gamesize);
+          inGameDrawObjt(context, game, counter):
+          inGame.update(game);
+          counter++;
+          requestAnimationFrame(tick);
+```
+
+## Additional Code Smells
+
+#### Dead Code Among the Living
+
+#### Vanilla DOM manipulation + jQuery
+
 ## Your Turn
 
 Some of the code examples from the above lesson came directly from Game Time and Ideabox projects.
 
 Your mission now is to spend time in your projects doing some refactoring or researching and adding more code smells examples to this tutorial.
 
-##### Find your Refactoring Buddy
-  - You do NOT have to pair program with them if you prefer to work solo. That said, pairing is a good skill to have so it's worth trying. Come up with a plan, man. You will need to each submit a pull request that does one of the following things.
+### Pair work
 
-  1. Fix a 'code smell' in one of your Gametime or Ideabox projects
-  2. Add a description of another JavaScript or general 'code smell' to look out for to this tutorial. You can claim one of the ones in the 'Additional Code Smells' block above or add one of your own.
+Your pair will be assigned one of the following refactor strategies and concepts. Choose one partner's ideabox or gametime. Spend 15 minutes understanding and applying it. Then we will come back together as a group, and you should share your understanding of your concept, and how you applied it.
 
-#### You Must Follow the Workflow Below
-- Dig into your IdeaBox and Game Time projects and try to identify issues or places for refactoring - OR - choose a code smell to add to this tutorial.
-- Create a [Github Issue](https://help.github.com/articles/creating-an-issue/) for the fix or documentation addition if one doesn't exist already.
-- Comment on any unclaimed issue to 'claim it' when you start work on a fix.
+Then we will shift concepts and go around again.
+
+- [Low Hanging Refactoring Fruit](#low-hanging-refactoring-fruit)
+- [More Complex JavaScript Code Issues to Look Out For](#more-complex-javascript-code-issues-to-look-out-for)
+- [Breaking the Law of Demeter](#breaking-the-law-of-demeter)
+- [Callback Hell](#callback-hell) (should probably use ideabox)
+- [Single Responsibility Principle && Code that Does Too Much](#single-responsibility-principle--code-that-does-too-much)
+- [If If If Else If Else Else If Else](#if-if-if-else-if-else-else-if-else-)
+- [Breaking Up Functions](#breaking-up-functions)
+- [Passing Too Many Arguments to a Function](#passing-too-many-arguments-to-a-function)
+- [Dead Code Among the Living](#dead-code-among-the-living)
+- [Vanilla DOM manipulation + jQuery](#vanilla-dom-manipulation--jquery)
+
+### Homework
+
+#### Overview
+
+1. Find your refactoring buddy & decide how you want to work
+	- You can pair with them or choose to work independently if you prefer working solo. Either way, come up with a plan, man.
+
+2. Each person will each need to submit a pull request (2 PRs total)
+
+3. Options for what you work on are:
+	- Fixing a 'code smell' in a Gametime or Ideabox project
+    - Adding a description of another JavaScript or general 'code smell' to look out for to this tutorial.
+
+#### Details
+
+1. Dig into your IdeaBox and Game Time projects and try to identify issues or places for refactoring - OR - choose a code smell to add to this tutorial - OR - propose and implement a better organization of all of the content we've collected over the innings.
+2. Create a [Github Issue](https://help.github.com/articles/creating-an-issue/) for the proposed fix or documentation topic.
+- Comment or assign yourself to an issue to 'claim it' when you start work on a fix.
   - Why?: This is how you know that you're not duplicating work that someone else is doing on the project.
 - Check out a branch and make the fix.
 - You will need to submit Pull Requests for any refactors or documentation you make.
-  - You can submit a Pull Requests for individual fixes or submit a PR that includes many fixes. There are pros and cons to either choice.
 - [Use the following template as the body of your Pull Request(s)](https://gist.github.com/rrgayhart/c64f0966a36a9c47b227)
-- On the PR:
-  - Tag an instructor of your choice.
-  - If: you worked with your Refactoring Buddy
-    - Tag a member of another refactor team to review the PR
+- In the PR:
+  - Tag ***one*** instructor:
+  
+    - Mod 2: @joshuajhun || @rrgayhart || @Tman22 .
+    - Mod 4: @carmer || @neight-allen
+  - If: you paired with your Refactoring Buddy
+     - Tag a member of another refactor team to review the PR
   - Else:
-    - Tag your Refactoring Buddy to review the PR
+     - Tag your Refactoring Buddy to review the PR
 - Review any PRs you have been tagged on.
   - Comment inline on the code or documentation changes. If you like something someone did, let them know. If you have concerns about the change, let them know (nicely). If you have questions, ask them. If you think the PR is good to merge, let them know with a thumbs up or a ship emoji or just regular old words.
-  - Respond to the comments that you get on your PRs.
+- Respond to any comments on your PRs.
 
 __A Note on Refactoring__
 
 One of the best things about working as a programmer is working with other programmers. We all make mistakes in our code, from Linus Torvalds to [InfoSec Taylor Swift](https://twitter.com/SwiftOnSecurity?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor) to some guy named Fred who just finished a Code School course and added 'software developer' to his LinkedIn profile. It's impossible to know every trick and best practice, and even if you did, you'd still make silly code mistakes in the heat of the moment.
 
 This is why we pair program and have code reviews.
+
+The examples that we pull out in this tutorial are the kinds that every programmer makes. Sometimes it takes a second set of eyes to see where improvements can be made. You'll see them in your code, classmates' code, your instructors' code, your boss's code... etc.
+
+Never be afraid to make a mistake, that's what you learn from!
 
 The examples that we pull out in this tutorial are the kinds that every programmer makes. Sometimes it takes a second set of eyes to see where improvements can be made. You'll see them in your code, classmates' code, your instructors' code, your boss's code... etc.
 

@@ -27,6 +27,11 @@ There are a few common solutions we might take for these issues:
 * **Stubbing** -- often we can use in-process stubbing libraries to replace our API queries with canned, static responses that will be fast and reliable
 * **Network-level Mocking** -- sometimes we might want to capture the whole network response. Fortunately there are tools like VCR available for this.
 
+If you're interested in reading about testing external APIs that don't use VCR check out these two articles as a starting point:
+
+* [How to Stub External Services in Tests](https://robots.thoughtbot.com/how-to-stub-external-services-in-tests)
+* [Have you ever... Faked It?](https://robots.thoughtbot.com/fake-it)
+
 ### Workshops
 
 We are going to use the Sunlight API to retrieve all legislators and committees that match a criteria - and we are going to test it using VCR.
@@ -399,6 +404,31 @@ end
 ```
 
 Make the test pass - if you get stuck, reference the `Legislator` model.
+
+#### 7. Review of the Big Picture
+
+Have students create a diagram of the moving pieces for the following scenarios:
+
+1. A test that makes an API call without a VCR cassette
+  * What role do the following pieces play?
+    * Rails app
+    * External API (github, twitter, etc)
+    * Webmock
+    * VCR
+    * cassettes
+    * The Internet
+    * Faraday
+    * Figaro
+1. A test that makes an API call with VCR
+  * What role do the following pieces play?
+    * Rails app
+    * External API (github, twitter, etc)
+    * Webmock
+    * VCR
+    * cassettes
+    * The Internet
+    * Faraday
+    * Figaro
 
 ### Materials
 

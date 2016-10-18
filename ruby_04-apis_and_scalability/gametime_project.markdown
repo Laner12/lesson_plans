@@ -1,6 +1,6 @@
 ---
 title: Game Time
-length: 1
+length: 2
 tags: javascript, jquery, canvas, svg, mocha, testing
 ---
 
@@ -12,8 +12,8 @@ This project is inspired by [Minicade](http://minica.de/).
 
 ## Goals
 
-* Use client-side to drive both the design and implementation of code
-* Use jQuery to traverse and manipulate the DOM
+* Use design patterns to drive both the design and implementation of code
+* Separate business-logic code from view-related code
 * Use test-driven design to build a client-side application
 
 ### Restrictions
@@ -35,49 +35,33 @@ You can use any of the following build tools:
 * [Grunt](http://gruntjs.com/)
 * [Gulp](http://gulpjs.com/)
 
-## Game Options
-
-You can choose to implement any of the games listed below.
-
-* Connect Four
-* Lights Out
-* Othello/Reversi
-* 2048
-* Tetris
-* Snake
-* Tron
-
-(Other idea and suggestions are available with instructor approval.)
+**Nota bene**: We provide a [Game Time Starter Kit](https://github.com/turingschool-examples/game-time-starter-kit) that has been preconfigured with Webpack. You should probably use this starter kit.
 
 ## Playability Features
 
-We want your game to be full-featured and playable -- not just a proof
-of concept of the gameplay and rendering features.
+We want your game to be full-featured and playable -- not just a proof of concept of the gameplay and rendering
+features.
 
-To this end, make sure to include sufficient UX to allow the user to
-fully interact with the game. This would include:
+To this end, make sure to include sufficient UX to allow the user to fully interact with the game. This would
+include:
 
 * Indicate when the game is over and won or lost
 * Allow the user to start a new game
 * Include a clean UI surrounding the actual game interface itself
 * Score Tracking: How this works will vary by game, but at the end of
   the game, generate a score for the winning player
-
-## Extensions
-
 * Scoreboard -- track scores across multiple game sessions. Since we
   aren't incorporating a server for our games, client-side storage like
   a cookie or LocalStorage will suffice.
 * Create multiple rounds of difficulty. (consider increasing factors
   such as game speed, randomness of starting setup, etc)
+
+## Extensions
+
 * Create an AI player that can play as the second player (except in 2048).
 * Multiplayer support -- either by sharing a keyboard (2 sets of key
   inputs) or, as an extra-difficult extension, via websockets between
   multiple browsers
-
-## Evaluation Rubric
-
-150 out of a total of 300 points are included in the rubric below. The additional 150 feature points will be determined during iteration planning with instructors during check-ins.
 
 ### Functional Expectations
 
@@ -88,7 +72,7 @@ fully interact with the game. This would include:
 
 ### User Interface
 
-* **15 points** - The application is pleasant, logical, and easy to use. There no holes in functionality and the application stands on it own to be used by the instructor _without_ guidance from the developer.
+* **15 points** - The application is pleasant, logical, and easy to use. There are no holes in functionality and the application stands on its own to be used by the instructor _without_ guidance from the developer.
 * **10 points** - The application has many strong pages/interactions, but a few holes in lesser-used functionality.
 * **5 points** - The application shows effort in the interface, but the result is not effective. The evaluator has some difficulty using the application when reviewing the features in the user stories.
 * **0 points** - The application is confusing or difficult to use.
@@ -96,13 +80,13 @@ fully interact with the game. This would include:
 ### Testing
 
 * **30 points** - Project has a running test suite that exercises the application at multiple levels. The test suite convers almost all aspects of the application and uses mocks and stubs when appropriate.
-* **25 points** - Project has a running test suite that tests and multiple levels but fails to cover some features. All controller actions are covered by tests. The application makes some use of integration testing.
+* **25 points** - Project has a running test suite that tests multiple levels but fails to cover some features. All functionality is covered by tests. The application makes some use of integration testing.
 * **10 points** - Project has sporadic use of tests and multiple levels. The application contains numerous holes in testing and/or many features are untested.
 * **0 points** - There is little or no evidence of testing in this application.
 
 ### JavaScript Style
 
-* **30 points** - Application has exceptionally well-factored code with little or now duplication and all components separated out into logical components. There _zero_ instances where an instructor would recommend taking a different approach.
+* **30 points** - Application has exceptionally well-factored code with little or no duplication and all components are separated out into logical components. There _zero_ instances where an instructor would recommend taking a different approach.
 * **20 points** - Application is thoughtfully put together with some duplication and no major bugs. Developer can speak to choices made in the code and knows what every line of code is doing.
 * **15 points** - Your application has a significant amount of duplication and one or major bugs.
 * **5 points** - Your client-side application does not function. Developer writes code with unnecessary variables, operations, or steps which do not increase clarity.

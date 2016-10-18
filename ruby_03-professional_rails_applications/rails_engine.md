@@ -5,6 +5,13 @@ tags:
 type: project
 ---
 
+## REST refresher
+
+You learned about REST with respect to Rails in Module 2. Let's revisit it in the broader programming community.
+
+[REST Slides](https://docs.google.com/presentation/d/1KF5ubJmFZWTKULsJYkny6olgSBplAFWwOi0d7wvH9is/edit?usp=sharing)
+
+
 ## Project Description
 
 In this project, you will use Rails and ActiveRecord to build a JSON API which exposes the SalesEngine data schema.
@@ -13,20 +20,65 @@ The project requirements are listed below:
 
 * [Learning Goals](#learning-goals)
 * [Technical Expectations](#technical-expectations)
+* [Check-ins](#check-ins-and-milestones)
 * [Evaluation](#evaluation)
 
-## <a name="learning-goals"></a> Learning Goals
+## Learning Goals
 
 * Learn how to to build Single-Responsibility controllers to provide a well-designed and versioned API.
 * Learn how to use controller tests to drive your design.
 * Use Ruby and ActiveRecord to perform more complicated business intelligence.
 
-## <a name="technical-expectations"></a> Technical Expectations
+### Dividing the Work
+
+You should create stories divided the following way to make sure both team members get exposure to all major components of the project and are able to hit the learning goals above.
+
+**Record Endpoints**
+
+* Person A
+  * Merchants
+  * Transactions
+  * Customers
+* Person B
+  * Invoices
+  * Items
+  * Invoice Items
+
+**Relationship Endpoints**
+
+* Person A
+  * Invoices
+  * Items
+  * Invoice Items
+* Person B
+  * Merchants
+  * Transactions
+  * Customers
+
+**Business Intelligence Endpoints**
+
+(This portion should be a good starting point for balancing the work. If this seems uneven let the staff know so they can make adjustments.)
+
+* Person A
+  * `GET /api/v1/merchants/:id/revenue`
+  * `GET /api/v1/merchants/:id/revenue?date=x`
+  * `GET /api/v1/merchants/most_items?quantity=x`
+  * `GET /api/v1/customers/:id/favorite_merchant`
+  * `GET /api/v1/items/:id/best_day`
+  * `GET /api/v1/items/most_items?quantity=x`
+* Person B
+  * `GET /api/v1/merchants/:id/customers_with_pending_invoices`
+  * `GET /api/v1/merchants/:id/favorite_customer`
+  * `GET /api/v1/items/most_revenue?quantity=x`
+  * `GET /api/v1/merchants/revenue?date=x`
+  * `GET /api/v1/merchants/most_revenue?quantity=x`
+
+## Technical Expectations
 
 * All endpoints will expect to return JSON data
 * All endpoints should be exposed under an `api` and version (`v1`)
 namespace (e.g. `/api/v1/merchants.json`)
-* JSON responses should included `ids` only for associated records unless otherwise indicated (that is, don't embed the whole associated record, just the id)
+* JSON responses should include `ids` only for associated records unless otherwise indicated (that is, don't embed the whole associated record, just the id)
 * Prices are in cents, therefore you will need to transform them in dollars. (`12345` becomes `123.45`)
 * Remember that for a JSON string to be valid, it needs to contain a key and a value.
 
@@ -43,46 +95,127 @@ entity included in the [sales engine data](https://github.com/turingschool/sales
 Each data category should include an `index` action which
 renders a JSON representation of all the appropriate records:
 
+##### Request URL
+
 `GET /api/v1/merchants.json`
+
+##### JSON Output
+
+(The following is an example of a response if only three records were saved in the database)
+
+```json
+[
+  {
+    "id":1,
+    "name":"Schroeder-Jerde"
+  },
+  {
+    "id":2,
+    "name":"Klein, Rempel and Jones"
+  },
+  {
+    "id":3,
+    "name":"Willms and Sons"
+  }
+]
+```
 
 #### Show Record
 
 Each data category should include a `show` action which
 renders a JSON representation of the appropriate record:
 
+##### Request URL
+
 `GET /api/v1/merchants/1.json`
+
+##### JSON Output
+
+```json
+{
+  "id":1,
+  "name":"Schroeder-Jerde"
+}
+```
 
 #### Single Finders
 
-Each data category should offer `find` finders to return a single object representation like this:
+Each data category should offer `find` finders to return a single object representation. The finder should work with any of the attributes defined on the data type and always be case insensitive.
+
+##### Request URL
 
 ```
-GET /api/v1/merchants/find?id=12
+GET /api/v1/merchants/find?parameters
 ```
 
-Which would find the one merchant with ID `12`. The finder should work with any of the attributes defined on the data type and always be case insensitive.
+##### Request Parameters
 
-For example:
+---
+| parameter  | description                          |
+|------------|--------------------------------------|
+| id         | search based on the primary key      |
+| name       | search based on the name attribute   |
+| created_at | search based on created_at timestamp |
+| updated_at | search based on updated_at timestamp |
+---
 
-```
-GET /api/v1/merchants/find?name=Schroeder-Jerde
+##### JSON Output
+
+`GET /api/v1/merchants/find?name=Schroeder-Jerde`
+
+```json
+{  
+   "id":1,
+   "name":"Schroeder-Jerde"
+}
 ```
 
 #### Multi-Finders
 
-Each category should offer `find_all` finders like this:
+Each category should offer `find_all` finders which should return all matches for the given query. It should work with any of the attributes defined on the data type and always be case insensitive.
 
+##### Request URL
+
+`GET /api/v1/merchants/find_all?parameters`
+
+##### Request Parameters
+
+| parameter  | description                          |
+|------------|--------------------------------------|
+| id         | search based on the primary key      |
+| name       | search based on the name attribute   |
+| created_at | search based on created_at timestamp |
+| updated_at | search based on updated_at timestamp |
+
+##### JSON Output
+
+`GET /api/v1/merchants/find_all?name=Cummings-Thiel`
+
+```json
+[  
+   {  
+      "id":4,
+      "name":"Cummings-Thiel"
+   }
+]
 ```
-GET /api/v1/merchants/find_all?name=Cummings-Thiel
-```
 
-Which would find all the merchants whose name matches this query.
-
-The finder should work with any of the attributes defined on the data type and always be case insensitive.
+Note: Although this search returns one record, it comes back in an array.
 
 #### Random
 
-`api/v1/merchants/random.json` returns a random merchant.
+##### Request URL
+
+Returns a random resource.
+
+`api/v1/merchants/random.json`
+
+```json
+{
+  "id": 50,
+  "name": "Nader-Hyatt"
+}
+```
 
 ### Relationship Endpoints
 
@@ -154,11 +287,25 @@ _NOTE_: All revenues should be reported as a float with two decimal places.
 
 * `GET /api/v1/items/most_revenue?quantity=x` returns the top `x` items ranked by total revenue generated
 * `GET /api/v1/items/most_items?quantity=x` returns the top `x` item instances ranked by total number sold
-* `GET /api/v1/items/:id/best_day` returns the date with the most sales for the given item using the invoice date
+* `GET /api/v1/items/:id/best_day` returns the date with the most sales for the given item using the invoice date. If there are multiple days with equal number of sales, return the most recent day.
 
 #### Customers
 
 * `GET /api/v1/customers/:id/favorite_merchant` returns a merchant where the customer has conducted the most successful transactions
+
+## Check-in and Milestones
+
+You will meet with an instructor in the middle of the project project. The goal of that check-in, and roughly what should be completed before the check-in is listed below.
+
+- 20-30 minutes
+
+#### What should be done
+
+Your Record Endpoints should be completed, and you should be working on your Relationship Endpoints. You're on a good path if you have all of Wednesday to work on Business Intelligence Endpoints.
+
+#### What to expect from instructors
+
+Instructors will go over whatever technical, planning or other challenges you're having. They also may give you feedback, or suggest a different path than the one you're on.
 
 ## <a name="evaluation"></a> Evaluation
 
@@ -167,9 +314,9 @@ _NOTE_: All revenues should be reported as a float with two decimal places.
 **1. Completion**
 
 * 4: Project completes all base requirements according to the spec harness.
-* 3: Project completes most requirements but fails 5 or fewer spec harness tests.
-* 2: Project completes most requirements but fails 10 to 6 spec harness tests.
-* 1: Project fails more than 10 spec harness tests.
+* 3: Project completes most requirements but fails 3 (5 for individual project) or fewer spec harness tests.
+* 2: Project completes most requirements but fails 7 - 5 (10 to 6 for individual project) spec harness tests.
+* 1: Project fails more than 7 (10 for individual project) spec harness tests.
 
 ### Technical Quality
 

@@ -5,12 +5,15 @@ tags: enumerables,max, min, max_by, min_by, sort_by
 ---
 
 ## Goals
-* Understand how to use max, max_by, their opposites, and sort_by appropriately.
+* Understand how to use `max`, `max_by,` their opposites, and `sort_by` 
+appropriately.
 
 ### Hook
 
 We've got a handle on the beginner enumerables, and you've probably figued out
-how to use another few to sort our information.
+how to use another few to sort our information. So far, we've learned how to 
+create a new collection, and how to search in the selection returning us either
+a single item or multiple items.
 
 ### min / max
 
@@ -89,7 +92,7 @@ and their age.
 
 ```ruby
 people = []
-people << Person.new("Bob", 24)
+people << Person.new("Alice", 24)
 people << Person.new("Dave", 26)
 people << Person.new("Zayn", 30)
 
@@ -156,12 +159,30 @@ So let's simplify the problem.
 Now you try.
 
 ```ruby
-one_direction = [["Niall", 22],["Liam", 22],["Harry", 22],["Louis", 24],
-["Zayn", 23]]
+class Person
+  attr_reader :name,
+              :age
+
+  def initialize(name, age)
+    @name = name
+    @age  = age
+  end
+end
+
+one_direction = []
+
+one_direction << Person.new("Niall", 22)
+one_direction << Person.new("Liam", 22)
+one_direction << Person.new("Harry", 22)
+one_direction << Person.new("Louis", 24)
+one_direction << Person.new("Zayn", 23)
+
 ```
 
-Grab me the oldest member of One Direction, and then grab me the first alphabetically.
+On paper, Grab me the oldest member of One Direction, and then grab me the first 
+alphabetically.
 
+Now check with your work with your neighbor.
 
 ### sort_by
 
@@ -190,11 +211,29 @@ That's a simple array, we can take it to the next level by using
 our previous example.
 
 ```ruby
-one_direction = [["Niall", 22],["Liam", 22],["Harry", 22],["Louis", 24],
-["Zayn", 23]]
+class Person
+  attr_reader :name,
+              :age
+
+  def initialize(name, age)
+    @name = name
+    @age  = age
+  end
+end
+
+one_direction = []
+
+one_direction << Person.new("Niall", 22)
+one_direction << Person.new("Liam", 22)
+one_direction << Person.new("Harry", 22)
+one_direction << Person.new("Louis", 24)
+one_direction << Person.new("Zayn", 23)
+
 ```
 
 Using this, how do you think we can sort by their name alphabetically?
+
+Do this on paper. Check your work with a nearby friend.
 
 
 ### all?
@@ -227,7 +266,45 @@ end
 
 This would return false.
 
-### Homework:
+Ruby collections (Array, Hash, Range) have access to the [Enumerable](http://ruby-doc.org/core-2.3.1/Enumerable.html) module.
+```ruby
+array.included_modules
+=> [Enumerable, PP::ObjectMixin, Kernel]
+```
 
-* Go back and look at your collections homework and see if you can now do better.
-* In `enums-exercises` complete sort_by, any?, all?, none?, and one?
+The Enumerable module gives Array access to many enumerable methods.
+```ruby
+Enumerable.instance_methods # 54 total
+=> [:to_a, :to_h, :include?, :find, :entries, :sort, :sort_by, :grep, :grep_v, :count, :detect, :find_index, :find_all, :select, :reject, :collect, :map, :flat_map, :collect_concat, :inject, :reduce, :partition, :group_by, :first, :all?, :any?, :one?, :none?, :min, :max, :minmax, :min_by, :max_by, :minmax_by, :member?, :each_with_index, :reverse_each, :each_entry, :each_slice, :each_cons, :each_with_object, :zip, :take, :take_while, :drop, :drop_while, :cycle, :chunk, :slice_before, :slice_after, :slice_when, :chunk_while, :lazy]
+
+Array.instance_methods # 184 total
+=> [:fill, :assoc, :rassoc, :uniq, :uniq!, :compact, :compact!, :flatten, :to_h, :flatten!, :shuffle!, :shuffle, :include?, :combination, :repeated_permutation, :permutation, :product, :sample, :repeated_combination, :bsearch_index, :bsearch, :select!, :&, :*, :+, :-, :sort, :count, :find_index, :select, :reject, :collect, :map, :pack, :first, :any?, :reverse_each, :zip, :take, :take_while, :drop, :drop_while, :cycle, :insert, :|, :index, :rindex, :replace, :clear, :pretty_print, :<=>, :<<, :==, :[], :[]=, :reverse, :empty?, :eql?, :concat, :reverse!, :shelljoin, :inspect, :delete, :length, :size, :each, :slice, :slice!, :to_ary, :to_a, :to_s, :pretty_print_cycle, :dig, :hash, :at, :fetch, :last, :push, :pop, :shift, :unshift, :frozen?, :each_index, :join, :rotate, :rotate!, :sort!, :collect!, :map!, :sort_by!, :keep_if, :values_at, :delete_at, :delete_if, :reject!, :transpose, :find, :entries, :sort_by, :grep, :grep_v, :detect, :find_all, :flat_map, :collect_concat, :inject, :reduce, :partition, :group_by, :all?, :one?, :none?, :min, :max, :minmax, :min_by, :max_by, :minmax_by, :member?, :each_with_index, :each_entry, :each_slice, :each_cons, :each_with_object, :chunk, :slice_before, :slice_after, :slice_when, :chunk_while, :lazy, :pry, :__binding__, :pretty_print_instance_variables, :pretty_print_inspect, :instance_of?, :public_send, :instance_variable_get, :instance_variable_set, :instance_variable_defined?, :remove_instance_variable, :private_methods, :kind_of?, :instance_variables, :tap, :is_a?, :extend, :define_singleton_method, :to_enum, :enum_for, :===, :=~, :!~, :respond_to?, :freeze, :display, :send, :pretty_inspect, :object_id, :method, :public_method, :singleton_method, :nil?, :class, :singleton_class, :clone, :dup, :itself, :taint, :tainted?, :untaint, :untrust, :trust, :untrusted?, :methods, :protected_methods, :public_methods, :singleton_methods, :!, :!=, :__send__, :equal?, :instance_eval, :instance_exec, :__id__]
+```
+
+When an array _instance_ uses an enumerable method, the enumerator creates an instance of  [Enumerator](http://ruby-doc.org/core-2.2.0/Enumerator.html) from the array.
+
+```ruby
+array = [1,2,3]
+=> [1,2.3]
+
+array.each.inspect
+=> "#<Enumerator: [1,2,3]:each]>
+
+array.select.inspect
+=> "#<Enumerator: [1, 2, 3]:select>"
+```
+
+Ruby collections (built in or created by you), can include the Enumerable module and make use of Enumerable methods as long as the class has it's own #each method that Enumerable can use. Each is built into most Ruby collections (Array, Hash, Range), but can also be written by other
+
+Array can also use the `to_enum` method (inherited from the Object class) to transform into a Enumerator.
+```ruby
+Array.superclass
+=> Object
+Object.instance_methods
+=> [...,to_enum,...]
+
+[1,2,3].to_enum.inspect
+=> "#<Enumerator: [1, 2, 3]:each>"
+```
+
+If you want to know more about why Ruby is so eager to transform collections to Enumerators, read up on Ruby's `lazy` versus `eager` tradeoffs (for example, Pat Shaughnessy's, ["Ruby 2.0 Works Hard So You Can Be Lazy"](http://patshaughnessy.net/2013/4/3/ruby-2-0-works-hard-so-you-can-be-lazy)).

@@ -221,7 +221,7 @@ working, so now let's head over and configure the portion
 for the browser.
 
 Socket.io adds a route to our server with its client-side
-library. If you visit
+library. Restart your server.  If you visit
 `http://localhost:3000/socket.io/socket.io.js`
 you can see the source for the client-side library and
 verify that everything is wired up correctly.
@@ -640,11 +640,3 @@ Some blogs/resources:
 - [Testing SocketIO](http://liamkaufman.com/blog/2012/01/28/testing-socketio-with-mocha-should-and-socketio-client/)
 - [Testing Socketio Apps](https://dzone.com/articles/testing-socketio-apps)
 - [An Example on Github](https://github.com/liamks/Testing-Socket.IO)
-
-## Submitting
-
-Please add the link to your deployed application and repository by noon.
-
-```
-https://gist.github.com/rrgayhart/8cc261e37f62f4649a64
-```

@@ -22,7 +22,7 @@ From your terminal, run `psql`.
 
 If you get an error that says something like `Database username "YOUR_NAME" does not exist.` you will need to create a database that shares the username. Run `createdb "YOUR_NAME"` and re-run `psql`.
 
-Create a database to use a playground:
+Create a database to use as a playground:
 `CREATE DATABASE intermediate_sql;`
 
 Close the current connection and connect to the DB we just created.
@@ -64,7 +64,7 @@ VALUES ('lobster mac n cheese', 1200, 'side'),
 Let's create an item that has all NULL values:
 `INSERT into items (name, revenue, course) VALUES (NULL, NULL, NULL);`
 
-Now, write a query that returns a count for all rows without counting the `id` column (It's not common, but it's not necessary for a table to have an `id` column). The result should be 5.
+Typically you `count` records in a table by counting on the `id` column, like `SELECT COUNT(id) FROM items;`. However, it's not necessary for a table to have an `id` column. What else can you pass to `count` and still get `5` as your result?
 
 #### Building on Aggregate Functions
 
@@ -84,7 +84,7 @@ How can we get the revenue based on the course?
 
 #### INNER JOINS
 
-Now to the fun stuff. We're going to need multiple tables and to ensure we are on the same page, let's drop our table and populate our database with new data to experiment with.
+Now to the fun stuff. If you're a visual learner, you'll probably want to keep [this article](https://blog.codinghorror.com/a-visual-explanation-of-sql-joins/) as you explore the concepts below. We're going to need multiple tables and to ensure we are on the same page, let's drop our table and populate our database with new data to experiment with.
 
 `DROP TABLE items;`
 
@@ -94,7 +94,7 @@ Create some tables...
 CREATE TABLE seasons(id SERIAL, name TEXT);
 CREATE TABLE items(id SERIAL, name TEXT, revenue INT, season_id INT);
 CREATE TABLE categories(id SERIAL, name TEXT);
-CREATE TABLE items_categories(item_id INT, category_id INT);
+CREATE TABLE item_categories(item_id INT, category_id INT);
 ```
 
 Insert some data...
@@ -127,7 +127,7 @@ VALUES ('side'),
 ```
 
 ```sql
-INSERT INTO items_categories (item_id, category_id)
+INSERT INTO item_categories (item_id, category_id)
 VALUES (1, 1),
        (2, 2),
        (2, 4),
@@ -182,7 +182,7 @@ grilled cheese       | spring
 (7 rows)
 ```
 
-Now let's combine multiple `INNER JOIN`s to pull data from three tables `items`, `categories` and `items_categories`.
+Now let's combine multiple `INNER JOIN`s to pull data from three tables `items`, `categories` and `item_categories`.
 
 * Write a query that pulls all the category names for `arugula salad`.
   Hint: Use multiple `INNER JOIN`s and a `WHERE` clause.
@@ -329,6 +329,44 @@ side       | 2300
 ```
 * Take a look at your RailsEngine project. Take a look at you methods for handling business logic. Use the `to_sql` method to see what SQL ActiveRecord is generating. What things are things more clear? What things are still unclear?
 
-### Resources
+### Possible Solutions
 
-[Possible Solutions](https://gist.github.com/jmejia/9077b05750938c28d7a3)
+Some of these apply directly to challenges above. Most of them will need to be modified to acheive the challenge.
+
+
+```sql
+SELECT count(*) FROM items;
+```
+
+```sql
+SELECT * FROM items WHERE course = 'main';
+SELECT name FROM items WHERE course = 'main';
+SELECT max(revenue), min(revenue) from items WHERE course = 'main';
+SELECT sum(revenue) from items WHERE course = 'main';
+```
+
+```sql
+SELECT * FROM items
+WHERE revenue >
+(SELECT AVG(revenue) FROM items);
+```
+
+```sql
+SELECT SUM(i.revenue)
+FROM items i
+INNER JOIN item_categories ic
+ON i.id = ic.item_id
+INNER JOIN categories c
+ON c.id = ic.category_id
+WHERE c.name = 'dinner';
+```
+
+```sql
+SELECT c.name, SUM(i.revenue)
+FROM categories c
+INNER JOIN item_categories ic
+ON c.id = ic.category_id
+INNER JOIN items i
+ON i.id = ic.item_id
+GROUP BY c.name;
+```
